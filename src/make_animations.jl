@@ -5,66 +5,84 @@ const NPOINTS = 40
 function setup_and_record(setup_function, parameters, filename)
     nframe = parameters.nframe + 24
     fig, iter = setup_function(parameters)
-    record(fig, filename, 1:nframe; framerate = 24) do _
-        (i <= 24) ? display(fig) : iter()
+
+    record(fig, filename, 1:nframe; framerate = 24) do frame
+        (i <= 24) ? display(fig) : iter(frame)
+    end
+end
+
+function setup_and_record(animation::Dict, setups::Dict, to_filename::Function)
+    params = (; nframe=animation[:nframe], xygrid_lims=animation[:xygrid_lims], NPOINTS)
+    filename = to_filename(animation)
+
+    setup_and_record(params, filename) do p
+        setups["$(animation[:dim])"](p, animation)
     end
 end
 
 ################ descent ################
+function save_descent(animations::Dict)
+    # method specific
+    setups = Dict(
+        dim => ((par, anim) -> setup(par...; step_size=anim[:step], objective_type=anim[:objective])) 
+        for (dim, setup) in zip(("2D", "3D"), (setup_gradient, setup_gradient3d))
+    )
+
+    to_filename(anim) = begin 
+        finishes_with = ""
+        if !ismissing(anim[:zoom])
+            finishes_with = "_zoom"
+        elseif !ismissing(anim[:dynamic])
+            finishes_with = "_dynamic"
+        end
+        "$(anim[:method])_$(anim[:objective])_$(anim[:dim])_step$(replace_float2string(anim[:step]))$(finishes_with).mp4"
+    end
+
+    foreach(animations) do x
+        setup_and_record(x, setups, to_filename)
+    end
+end
+
 function save_descent()
-    method = "descent"
-    objectives = ["gaussian", "multimodal", "rosenbrock"]
-    step_sizes = [0.1, 0.005]
-    params = (; nframe=500, xygrid_lims=(-5.0, 5.0, -5.0, 5.0), NPOINTS)
+    animations = Vector{Any}[]
+    base_animation = Dict(
+        :method => "descent",
+        :objective => "gaussian",
+        :constraint => missing,
+        :dim => "2D",
+        :nframe => 500,
+        :xylims => (-5.0, 5.0, -5.0, 5.0),
+        :step => 0.01,
+        :dynamic => missing,
+        :zoom => missing
+    )
 
-    for objective_type in objectives[begin:end-1], step_size in step_sizes
-        step = replace_float2string(step)
+    for objective in ("gaussian", "multimodal"), step in (0.1, 0.005), dim in ("2D", "3D")
+        animation = deepcopy(base_animation)
+        animation[:objective] = objective
+        animation[:step] = step
+        animation[:dim] = dim
 
-        dim = "2D"
-        filename = "$(method)_$(objective_type)_$(dim)_step$(step).mp4"
-        setup_and_record(params, filename) do p
-            setup_gradient(p...; step_size, objective_type)
-        end
-
-        dim = "3D"
-        filename = "$(method)_$(objective_type)_$(dim)_step$(step).mp4"
-        setup_and_record(params, filename) do p
-            setup_gradient3d(p...; step_size, objective_type)
-        end
+        push!(animations, animation)
     end
 
-    dim = "2D"; objective_type = objectives[end]; step_sizes = [0.004, 0.005]
-    params = (; nframe=1500, xygrid_lims=(-5.0, 5.0, -5.0, 5.0), NPOINTS)
-    for step_size in step_sizes
-        step = replace_float2string(step)
-        filename = "$(method)_$(objective_type)_$(dim)_step$(step).mp4"
-        setup_and_record(params, filename) do p
-            setup_gradient(p...; step_size, objective_type)
-        end
-    end
-    
-    params = (; nframe=1500, xygrid_lims=(0.5, 1.5, 0.5, 1.5), NPOINTS)
-    filename = "$(method)_$(objective_type)_$(dim)_step0_005_zoom.mp4"
-    setup_and_record(params, filename) do p
-        setup_gradient(p...; step_size = 0.005, objective_type)
+    for step in (0.004, 0.005)
+        animation = deepcopy(base_animation)
+        animation[:objective] = "rosenbrock"
+        animation[:nframe] = 1500
+        animation[:step] = step
+
+        push!(animations, animation)
     end
 
-    # dynamic
-    dim = "3D"; objective_type = "gaussian"; step_size = 0.05; step = replace_float2string(step_size);
-    params = (; nframe=800, xygrid_lims=(-5.0, 5.0, -5.0, 5.0), NPOINTS)
-    filename = "$(method)_$(objective_type)_$(dim)_step$(step)_dynamic.mp4"
+    animation = deepcopy(base_animation)
+    animation[:objective] = "rosenbrock"
+    animation[:nframe] = 1500
+    animation[:xylims] = (0.5, 1.5, 0.5, 1.5)
+    animation[:step] = 0.005
+    animation[:zoom] = true
 
-    nframe = params.nframe + 24
-    fig, iter = setup_gradient3d(params...; step_size, objective_type)
-    record(fig, filename, 1:nframe; framerate = 24) do frame
-        if frame <= 24
-            display(fig)
-        else
-            fig.content[1].azimuth[] = 1.7π + 3.0 * sin(2π * frame / 1000)
-            fig.content[1].elevation[] = 0.15 + 1.0 * sin(2π * frame / 800)
-            iter()
-        end
-    end
+    push!(animations, animation)
 end
 
 ################ linesearch ################
