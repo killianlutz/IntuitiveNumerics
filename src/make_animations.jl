@@ -21,7 +21,7 @@ function setup_and_record(animation::Dict, setups::Dict, to_filename::Function)
 end
 
 ################ descent ################
-function save_descent(animations::Dict)
+function save_descent_(animations::Dict)
     # method specific
     setups = Dict(
         dim => ((par, anim) -> setup(par...; step_size=anim[:step], objective_type=anim[:objective])) 
@@ -83,6 +83,8 @@ function save_descent()
     animation[:zoom] = true
 
     push!(animations, animation)
+
+    save_descent_(animations)
 end
 
 ################ linesearch ################
