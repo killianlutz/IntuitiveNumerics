@@ -2,7 +2,7 @@ using Pkg
 Pkg.activate("./venv_IterAlgoAnimation/") ### TO DOOOOOOOOOOOOOOOOOOOOOOOOO
 # Pkg.instantiate() # first use: resolves appropriate package versions
 
-include("./src/IterAlgoAnimation.jl")
+include("../src/IterAlgoAnimation.jl")
 using .IterAlgoAnimation
 import GLMakie.theme_dark
 import GLMakie.set_theme!
@@ -47,7 +47,7 @@ fig, iter = setup_penalized_gradient3d(params...; step_size = 0.0001, objective_
 display(fig)
 for i in 1:nframe
     i == 1 ? sleep(2.0) : sleep(0.01)
-    iter()
+    iter(i)
 end
 
 # # with periodic cameras moves 
