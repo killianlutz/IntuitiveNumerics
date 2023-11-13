@@ -1,5 +1,5 @@
 using Pkg
-Pkg.activate("./venv_IterAlgoAnimation/") ### TO DOOOOOOOOOOOOOOOOOOOOOOOOO
+Pkg.activate("./venv_IterAlgoAnimation/")
 # Pkg.instantiate() # first use: resolves appropriate package versions
 
 include("../src/IterAlgoAnimation.jl")

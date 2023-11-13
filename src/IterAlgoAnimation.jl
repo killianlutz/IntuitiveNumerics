@@ -11,6 +11,7 @@ include("./figures.jl")
 include("./one_iteration.jl")
 include("./combine_figure_method.jl")
 include("./make_animations.jl")
+include("./define_animations.jl")
 
 export setup_gradient
 export setup_projgradient
