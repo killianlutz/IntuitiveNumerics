@@ -5,7 +5,7 @@ include("../src/IterAlgoAnimation.jl")
 using .IterAlgoAnimation
 
 # path to which animations will be saved
-cd("..\\animations/")
+cd(".\\animations/")
 
 animation_to_save = [
     IterAlgoAnimation.save_descent,

@@ -8,8 +8,9 @@ function setup_figure2d(xygrid_lims, npoints, f)
     title = lift(n) do t; L"$t = %$(t)"; end
     x = [Point2(x1, x2) for x1 in x1s, x2 in x2s]
     x = Observable(reshape(x, :))
-    color = lift(x) do y; f.(y); end # coloured with function values
+    # color = lift(x) do y; f.(y); end # coloured with function values
     # color = lift(x) do y; norm.(y); end
+    color = norm.(to_value(x))
 
     # static elements
     bbox_lims = xygrid_lims
@@ -18,7 +19,8 @@ function setup_figure2d(xygrid_lims, npoints, f)
     # contour plot
     ax = first(fig.content)
     bbox = to_value(ax.limits)
-    xs = range(bbox[1:2]..., 50); ys = range(bbox[3:4]..., 50);
+    xs = range(bbox[1:2]..., 50) 
+    ys = range(bbox[3:4]..., 50)
     zs = [f(Point2(x, y)) for x in xs, y in ys]
     cmap = ColorSchemes.RGBA.(ColorSchemes.color.(to_colormap(:grays)), 0.7) # transparent colormap
     contourf!(ax, xs, ys, zs, colormap = cmap, linewidth = 2)
@@ -42,10 +44,9 @@ function setup_figure3d(xygrid_lims, npoints, f)
     title = lift(n) do t; L"$t = %$(t)"; end
     x = [Point3(x1, x2, f(Point2(x1, x2))) for x1 in x1s, x2 in x2s]
     x = Observable(reshape(x, :))
-    color = lift(x) do y; f.((yi[1:2] for yi in y)); end
-    # color = norm.((xi[1:2] for xi in to_value(x)))
+    # color = lift(x) do y; f.((yi[1:2] for yi in y)); end
     # color = lift(x) do y; norm.((yi[1:2] for yi in y)); end
-
+    color = norm.((xi[1:2] for xi in to_value(x)))
 
     # static elements
     bbox_lims = (xygrid_lims..., extrema(last.(zs))...)
