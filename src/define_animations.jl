@@ -100,25 +100,26 @@ function save_penalized()
         :objective => "gaussian",
         :constraint => "ball",
         :dim => "2D",
-        :nframe => 1500,
+        :nframe => 800,
         :xylims => (-5.0, 5.0, -5.0, 5.0),
         :step => 0.01,
         :ϵ => 1.0
     )
 
-    epsilon_to_step = Dict(
-        "gaussian" => Dict(1.0 => 3e-2, 0.1 => 1e-5),
-        "multimodal" => Dict(1.0 => 1e-2, 0.1 => 1e-4),
-        "1modeat0" => Dict(1.0 => 1e-2, 0.1 => 1e-5)
-    )
-    for objective in ("gaussian", "multimodal", "1modeat0"), ϵ in (1.0, 0.1), dim in ("2D", "3D")
-        animation = deepcopy(base_animation)
-        animation[:objective] = objective
-        animation[:dim] = dim
-        animation[:step] = epsilon_to_step[objective][ϵ]
-        animation[:ϵ] = ϵ
+    objectives = ("gaussian", "multimodal", "1modeat0")
+    steps = (0.05, 0.0005, 0.01)
+    epsilons = (5.0, 0.1, 1.0)
 
-        push!(animations, animation)
+    for dim in ("2D", "3D")
+        for (objective, step, ϵ) in zip(objectives, steps, epsilons)
+            animation = deepcopy(base_animation)
+            animation[:objective] = objective
+            animation[:dim] = dim
+            animation[:step] = step
+            animation[:ϵ] = ϵ
+
+            push!(animations, animation)
+        end
     end
 
     save_penalized_(animations)

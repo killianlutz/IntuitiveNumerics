@@ -1,6 +1,16 @@
-function animstep!(f, x, p, n)
-    x[] = map(x.val) do y; f(y, p, n.val); end
-    n[] = n.val + 1
+" one animation frame update "
+function static_figure_update!(f, x, p, n)
+    x[] = map(to_value(x)) do y; f(y, p, to_value(n)); end
+    n[] = to_value(n) + 1
+end
+
+" one animation frame update with periodic camera moves "
+function dynamic_figure_update!(f, x, p, n, frame)
+    x[] = map(to_value(x)) do y; f(y, p, to_value(n)); end
+    n[] = to_value(n) + 1
+    # assumes first content of the figure is the axis for which the camera changes dynamically
+    current_figure().content[1].azimuth[] = 1.7π + 3.0 * sin(2π * frame / 900)
+    current_figure().content[1].elevation[] = 0.15 + 1.0 * sin(2π * frame / 700)
 end
 
 # Δx = step(x, p, n)

@@ -53,7 +53,7 @@ function setup_figure3d(xygrid_lims, npoints, f)
     fig = Figure(); ax = Axis3(fig[1, 1], xlabel = L"$x$", ylabel = L"$y$", zlabel = L"$J(x, y)$", limits = bbox_lims);
     Label(fig[1, 1, Top()], title, valign = :center, padding = (0.0, 0.0, 10.0, 0.0))
     
-    cmap = ColorSchemes.RGBA.(ColorSchemes.color.(to_colormap(:grays)), 0.7) # transparent colormap
+    cmap = ColorSchemes.RGBA.(ColorSchemes.color.(to_colormap(:grays)), 0.6) # transparent colormap
     surface!(ax, x1s, x2s, zs, colormap = cmap)
     colormap = cgrad(:bamako, rev=true)
     scatter!(ax, x, color = color, colormap = colormap, markersize = 8)

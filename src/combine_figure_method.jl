@@ -2,7 +2,7 @@ function setup_gradient(nframe, npoints, xygrid_lims; step_size = 0.5, objective
     J, dJ = get_objective(objective_type)
     fig, obs = setup_figure2d(xygrid_lims, npoints, J)
     
-    return fig, frame -> animstep!(step_gradient, obs.x, (step_size, dJ), obs.n)
+    return fig, frame -> static_figure_update!(step_gradient, obs.x, (step_size, dJ), obs.n)
 end
 
 function setup_projgradient(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian", constraint_type = "ball")
@@ -10,14 +10,14 @@ function setup_projgradient(nframe, npoints, xygrid_lims; step_size = 0.5, objec
     fig, obs = setup_figure2d(xygrid_lims, npoints, J)
     projector = setup_constraint!(fig, constraint_type)
     
-    return fig, frame -> animstep!(step_projgradient, obs.x, (step_size, dJ, projector), obs.n)
+    return fig, frame -> static_figure_update!(step_projgradient, obs.x, (step_size, dJ, projector), obs.n)
 end
 
 function setup_linesearch_gradient(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian")
     J, dJ = get_objective(objective_type) 
     fig, obs = setup_figure2d(xygrid_lims, npoints, J)
     
-    return fig, frame -> animstep!(step_linesearch_gradient, obs.x, (step_size, dJ, J), obs.n)
+    return fig, frame -> static_figure_update!(step_linesearch_gradient, obs.x, (step_size, dJ, J), obs.n)
 end
 
 function setup_penalized_gradient(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian", constraint_type = "ball", ϵ = 1e-3)
@@ -30,14 +30,18 @@ function setup_penalized_gradient(nframe, npoints, xygrid_lims; step_size = 0.5,
     c(x) = sum(abs2, x - center) - radius^2
     dc(x) = 2 .* (x .- center)
     
-    return fig, frame -> animstep!(step_penalized_gradient, obs.x, (step_size, dJ, dc, c, ϵ), obs.n)
+    return fig, frame -> static_figure_update!(step_penalized_gradient, obs.x, (step_size, dJ, dc, c, ϵ), obs.n)
 end
 
-function setup_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian")
+function setup_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian", is_dynamic = true)
     J, dJ = get_objective(objective_type) 
     fig, obs = setup_figure3d(xygrid_lims, npoints, J)
     
-    return fig, frame -> animstep!(step_gradient3d, obs.x, (step_size, dJ, J), obs.n)
+    if is_dynamic
+        return fig, frame -> dynamic_figure_update!(step_gradient3d, obs.x, (step_size, dJ, J), obs.n, frame)
+    else
+        return fig, _ -> static_figure_update!(step_gradient3d, obs.x, (step_size, dJ, J), obs.n)
+    end
 end
 
 function setup_primaldual3d(nframe, npoints, xygrid_lims; step_size = 0.5, algorithm = "uzawa", A = [3.0 1.0; 1.0 3.0], b = A*[1.5, 1.2])
@@ -62,11 +66,11 @@ function setup_primaldual3d(nframe, npoints, xygrid_lims; step_size = 0.5, algor
         end
     end
 
-    iter_animation = frame -> begin
+    step_forward = _ -> begin
         obs.n[] = to_value(obs.n) + 1
     end
 
-    return fig, iter_animation
+    return fig, step_forward
 end
 
 function setup_augmented_lagrangian3d(nframe, npoints, xygrid_lims; step_size = 0.5, A = [3.0 1.0; 1.0 3.0], b = A*[1.5, 1.2], B = [4.0 0; 0 1.0], grad_step = 0.005, grad_iter = 200)
@@ -98,14 +102,14 @@ function setup_augmented_lagrangian3d(nframe, npoints, xygrid_lims; step_size = 
         end
     end
 
-    iter_animation = frame -> begin
+    step_forward = _ -> begin
         obs.n[] = to_value(obs.n) + 1
     end
 
-    return fig, iter_animation
+    return fig, step_forward
 end
 
-function setup_penalized_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian", constraint_type = "ball", ϵ = 1e-3)
+function setup_penalized_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.5, objective_type = "gaussian", constraint_type = "ball", ϵ = 1e-3, is_dynamic = true)
     J, dJ = get_objective(objective_type) 
     fig, obs = setup_figure3d(xygrid_lims, npoints, J)
     setup_constraint!(fig, constraint_type)
@@ -115,5 +119,9 @@ function setup_penalized_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.
     c(x) = sum(abs2, x - center) - radius^2
     dc(x) = 2 .* (x .- center)
     
-    return fig, frame -> animstep!(step_penalized_gradient3d, obs.x, (step_size, dJ, J, dc, c, ϵ), obs.n)
+    if is_dynamic
+        return fig, frame -> dynamic_figure_update!(step_penalized_gradient3d, obs.x, (step_size, dJ, J, dc, c, ϵ), obs.n, frame)
+    else
+        return fig, _ -> static_figure_update!(step_penalized_gradient3d, obs.x, (step_size, dJ, J, dc, c, ϵ), obs.n)
+    end
 end
