@@ -134,7 +134,7 @@ function setup_constraint!(figure, constraint_type="ball")
     axis = figure.content[1, 1]
     if constraint_type == "ball"
         center = Point2(-1.0, -0.2)
-        radius = 3.0
+        radius = 2.0
         # projection onto admissible set
         ball_projector(x) = begin 
             distance = norm(x - center)
@@ -153,7 +153,7 @@ function setup_constraint!(figure, constraint_type="ball")
 
     elseif constraint_type == "box"
         x1_right = -0.5
-        x2_top = -1.0
+        x2_top = 1.0
         # projection onto admissible set
         quarterplane_projector(x) = begin 
             x1, x2 = x

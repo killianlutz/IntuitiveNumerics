@@ -75,16 +75,19 @@ function save_projected()
         :constraint => "ball",
         :dim => "2D",
         :nframe => 800,
-        :xylims => (-5.0, 5.0, -5.0, 5.0),
-        :step => 0.0005,
+        :xylims => (-4.0, 4.0, -4.0, 3.0),
+        :step => 0.005,
     )
 
-    objective_to_nframe = Dict("gaussian" => 800, "multimodal" => 1000, "1modeat0" => 300)
+    objective_to_nframe = Dict("gaussian" => 2000, "multimodal" => 1000, "1modeat0" => 300)
+    objective_to_step = Dict("gaussian" => 0.01, "multimodal" => 0.0005, "1modeat0" => 0.005)
+    
     for objective in ("gaussian", "multimodal", "1modeat0"), constraint in ("ball", "box")
         animation = deepcopy(base_animation)
         animation[:objective] = objective
         animation[:constraint] = constraint
         animation[:nframe] = objective_to_nframe[objective]
+        animation[:step] = objective_to_step[objective]
 
         push!(animations, animation)
     end
@@ -100,15 +103,15 @@ function save_penalized()
         :objective => "gaussian",
         :constraint => "ball",
         :dim => "2D",
-        :nframe => 800,
-        :xylims => (-5.0, 5.0, -5.0, 5.0),
+        :nframe => 1200,
+        :xylims => (-4.0, 4.0, -4.0, 3.0),
         :step => 0.01,
         :ϵ => 1.0
     )
 
     objectives = ("gaussian", "multimodal", "1modeat0")
-    steps = (0.05, 0.0005, 0.01)
-    epsilons = (5.0, 0.1, 1.0)
+    steps = (0.01, 0.0005, 0.005)
+    epsilons = (0.5, 0.01, 0.1)
 
     for dim in ("2D", "3D")
         for (objective, step, ϵ) in zip(objectives, steps, epsilons)
@@ -176,14 +179,14 @@ function save_augmented_lagrangian()
         :method => "augmented_lagrangian",
         :constraint => "ball",
         :dim => "3D",
-        :nframe => 50,
+        :nframe => 300,
         :xylims => (-1.0, 2.0, -1.0, 2.0),
-        :step => 1.0,
+        :step => 0.05,
         :A => A,
         :b => A*[1.5, 1.2],
         :B => missing,
         :grad_step => 0.001,
-        :grad_iter => 200
+        :grad_iter => 100
     )
 
     constraint_to_B = Dict("ball" => first(B), "ellipsoid" => last(B))

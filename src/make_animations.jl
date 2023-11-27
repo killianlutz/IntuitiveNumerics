@@ -7,7 +7,7 @@ function setup_and_record(setup_function, parameters, filename)
     fig, step_forward = setup_function(parameters)
 
     record(fig, filename, 1:nframe; framerate = 24) do frame
-        (frame <= 24) ? display(fig) : step_forward(frame)
+        (frame <= 24) ? display(fig) : step_forward(frame - 24)
     end
 end
 
@@ -103,7 +103,7 @@ function save_uzawa_(animations::Union{T, AbstractArray{T}}) where T<:Dict
     end
 end
 
-################ step_arrowhurwicz ################
+################ arrow hurwicz ################
 function save_arrowhurwicz_(animations::Union{T, AbstractArray{T}}) where T<:Dict
     # method specific
     setups = Dict(

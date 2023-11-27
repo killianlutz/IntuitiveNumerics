@@ -26,7 +26,7 @@ function setup_penalized_gradient(nframe, npoints, xygrid_lims; step_size = 0.5,
     setup_constraint!(fig, constraint_type)
 
     center = Point2(-1.0, -0.2)
-    radius = 3.0
+    radius = 2.0
     c(x) = sum(abs2, x - center) - radius^2
     dc(x) = 2 .* (x .- center)
     
@@ -115,7 +115,7 @@ function setup_penalized_gradient3d(nframe, npoints, xygrid_lims; step_size = 0.
     setup_constraint!(fig, constraint_type)
 
     center = Point2(-1.0, -0.2)
-    radius = 3.0
+    radius = 2.0
     c(x) = sum(abs2, x - center) - radius^2
     dc(x) = 2 .* (x .- center)
     
