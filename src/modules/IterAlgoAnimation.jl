@@ -5,13 +5,13 @@ using LinearAlgebra
 using ColorSchemes
 using Base.Threads
 
-include("./standard_examples.jl")
-include("./others.jl")
-include("./figures.jl")
-include("./one_iteration.jl")
-include("./combine_figure_method.jl")
-include("./make_animations.jl")
-include("./define_animations.jl")
+include("../standard_examples.jl")
+include("../others.jl")
+include("../figures.jl")
+include("../one_iteration.jl")
+include("../combine_figure_method.jl")
+include("../make_animations.jl")
+include("../define_animations.jl")
 
 export setup_gradient
 export setup_projgradient

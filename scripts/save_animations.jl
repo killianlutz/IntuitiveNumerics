@@ -1,7 +1,7 @@
 using Pkg
 Pkg.activate("../venv_IterAlgoAnimation/")
 
-include("../src/IterAlgoAnimation.jl")
+include("../src/modules/IterAlgoAnimation.jl")
 using .IterAlgoAnimation
 
 # path to which animations will be saved

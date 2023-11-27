@@ -2,7 +2,7 @@ using Pkg
 Pkg.activate("./venv_IterAlgoAnimation/")
 # Pkg.instantiate() # first use: resolves appropriate package versions
 
-include("../src/IterAlgoAnimation.jl")
+include("../src/modules/IterAlgoAnimation.jl")
 using .IterAlgoAnimation
 import GLMakie.theme_dark
 import GLMakie.set_theme!
