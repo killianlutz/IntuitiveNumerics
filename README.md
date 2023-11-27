@@ -1,6 +1,6 @@
-# IntuitiveNumerics.jl
+# IntuitiveOptimization
 
-## Goal: an intuitive understanding of classical numerical methods
+## Goal: an intuitive understanding of numerical optimization techniques
 This project gathers various animations which illustrate the principles and limitations of some classical numerical methods for optimization. See the `animations/` folder.
 
 ### Main idea
@@ -35,6 +35,6 @@ Next methods to be implemented include:
 ## Last words
 The source code is mainly provided for reproducibility purposes and the user's convenience. Any suggestions are more than welcome.
 
-If you enjoy those animations, I would be grateful if you could refer to this [repository](https://github.com/killianlutz/IntuitiveNumerics.jl) or its author Killian [Lutz](https://github.com/killianlutz).
+If you enjoy those animations, I would be grateful if you could refer to this [repository](https://github.com/killianlutz/IntuitiveOptimization) or its author Killian [Lutz](https://github.com/killianlutz).
 
 Thank you for your time and enjoy!
