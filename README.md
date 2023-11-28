@@ -1,9 +1,11 @@
 # IntuitiveOptimization
 
 ## Goal: an intuitive understanding of numerical optimization techniques
-This project gathers various animations which illustrate the principles and limitations of some classical numerical methods for optimization. See the `animations/` folder.
+This project gathers various animations which illustrate the principles and limitations of some classical numerical methods for optimization. See the `animations/` folder. 
 
-### Main idea
+https://github.com/killianlutz/IntuitiveOptimization/assets/152091888/50036378-13d0-4b13-9c9c-da0e7c7551df
+
+### Animation philosophy
 Most animations involve iterative algorithms for optimization and showcase the simultaneous evolutions of a bunch of starting points. These are shown on the graph of the objective function as if they were conservative physical systems seeking to reach equilibrium by minimizing their potential energy (objective function).
 
 ### Currently available numerical methods
